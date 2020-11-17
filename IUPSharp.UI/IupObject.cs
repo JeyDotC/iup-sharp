@@ -2,19 +2,28 @@
 using IUPSharp.UI.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace IUPSharp.UI
 {
     public abstract class IupObject
     {
-        private readonly IDictionary<IntPtr, IupObject> _childrenRegistry = new Dictionary<IntPtr, IupObject>();
+        private static readonly IDictionary<IntPtr, Type> _typeMap = new Dictionary<IntPtr, Type>();
 
-        internal IupObject(IntPtr handle) => Handle = handle;
+        internal IupObject(IntPtr handle)
+        {
+            Handle = handle;
+            _typeMap[handle] = GetType();
+        }
 
         static internal TIupObject CreateFromHandle<TIupObject>(IntPtr handle)
             where TIupObject : IupObject
-            => typeof(TIupObject).GetConstructor(new Type[] { typeof(IntPtr) }).Invoke(new object[] { handle }) as TIupObject;
+            => CreateFromHandle(handle, typeof(TIupObject)) as TIupObject;
+
+        static private IupObject CreateFromHandle(IntPtr handle, Type type)
+           => type.GetConstructor(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(IntPtr) }, null).Invoke(new object[] { handle }) as IupObject;
 
 
         internal IntPtr Handle { get; } = IntPtr.Zero;
@@ -23,15 +32,48 @@ namespace IUPSharp.UI
 
         public string Name { get => Get("NAME"); set => Set("NAME", value); }
 
-        public IupObject Parent { get; private set; }
+        public IupObject Parent
+        {
+            get
+            {
+                var parentHandle = Iup.IupGetParent(Handle);
+
+                if (parentHandle == IntPtr.Zero)
+                {
+                    return null;
+                }
+
+                var parentType = _typeMap[parentHandle];
+
+                return CreateFromHandle(parentHandle, parentType);
+            }
+        }
 
         public IupDialog Root => CreateFromHandle<IupDialog>(Iup.IupGetDialog(Handle));
 
-        public IEnumerable<IupObject> Children => _childrenRegistry.Values;
+        public int ChildCount => Iup.IupGetChildCount(Handle);
+
+        public IEnumerable<IupObject> Children
+        {
+            get
+            {
+                foreach (var childIndex in Enumerable.Range(0, ChildCount))
+                {
+                    var childHandle = Iup.IupGetChild(Handle, childIndex);
+                    var childType = _typeMap[childHandle];
+
+                    yield return CreateFromHandle(childHandle, childType);
+                }
+            }
+        }
 
         public string Get(string attribute) => Iup.IupGetAttribute(Handle, attribute);
 
         public void Set(string attribute, string value) => Iup.IupSetAttribute(Handle, attribute, value);
+
+        protected void SetCallback(string callbackName, Icallback callback) => Iup.IupSetCallback(Handle, callbackName, callback);
+
+        protected void SetCallback(string callbackName, ISizecallback callback) => Iup.IupSetCallback(Handle, callbackName, callback);
 
         public TControl GetByName<TControl>(string name)
             where TControl : IupObject
@@ -47,10 +89,6 @@ namespace IUPSharp.UI
 
         private void AddInternal(IupObject iupObject)
         {
-
-            iupObject.Parent = this;
-            _childrenRegistry[iupObject.Handle] = iupObject;
-
             // Do the actual append.
             Iup.IupAppend(Handle, iupObject.Handle);
             Iup.IupMap(iupObject.Handle);
@@ -60,7 +98,7 @@ namespace IUPSharp.UI
         public void Add(IupObject iupObject)
         {
             AddInternal(iupObject);
-            Iup.IupRefresh(Handle);
+            Refresh();
         }
 
         public void AddAll(params IupObject[] children)
@@ -69,16 +107,22 @@ namespace IUPSharp.UI
             {
                 AddInternal(child);
             }
+
+            Refresh();
         }
 
         public void Remove()
         {
             Iup.IupDetach(Handle);
-            if (Parent != null && Parent.Handle != IntPtr.Zero)
+            Parent?.Refresh();
+        }
+
+        public void Refresh()
+        {
+            if (Handle != IntPtr.Zero)
             {
-                Iup.IupRefresh(Parent.Handle);
+                Iup.IupRefresh(Handle);
             }
-            Parent = null;
         }
 
         public override bool Equals(object obj) => (obj as IupObject)?.Handle == Handle;

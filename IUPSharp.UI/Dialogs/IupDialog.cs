@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IUPSharp.UI.Events;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -7,6 +8,7 @@ namespace IUPSharp.UI.Dialogs
 {
     public sealed class IupDialog : IupControl
     {
+        internal IupDialog(IntPtr handle) : base(handle) { }
 
         public IupDialog()
             : this(new IupNoObject())
@@ -14,9 +16,34 @@ namespace IUPSharp.UI.Dialogs
 
         }
 
-        public IupDialog(IupObject child) : base(Iup.IupDialog(child.Handle)) { 
+        public IupDialog(IupObject child) : this(Iup.IupDialog(child.Handle)) { 
         }
 
+        public IupDialog OnClose(EventHandler<DialogCloseArgs> close)
+        {
+            SetCallback("CLOSE_CB", handle =>
+            {
+                var args = new DialogCloseArgs();
+
+                close?.Invoke(this, args);
+
+                return args.ShouldClose ? Iup.IUP_CLOSE : Iup.IUP_IGNORE;
+            });
+            return this;
+        }
+
+        public IupDialog OnResize(EventHandler<DialogResizeArgs> resize)
+        {
+            SetCallback("RESIZE_CB", (h, width, height) => {
+                var args = new DialogResizeArgs(new Size(width, height));
+
+                resize?.Invoke(this, args);
+
+                return Iup.IUP_NOERROR;
+            });
+
+            return this;
+        }
 
         public string Background
         {

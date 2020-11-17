@@ -8,6 +8,7 @@ namespace IUPSharp
 {
 
     public delegate int Icallback(IntPtr handle);
+    public delegate int ISizecallback(IntPtr handle, int widht, int height);
     public delegate int Iparamcb(IntPtr dialog, int param_index, IntPtr user_data);
 
     /************************************************************************/
@@ -245,6 +246,7 @@ namespace IUPSharp
 
         [DllImport(IUP_DLL)] public static extern Icallback IupGetCallback(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name);
         [DllImport(IUP_DLL)] public static extern Icallback IupSetCallback(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, Icallback func);
+        [DllImport(IUP_DLL)] public static extern Icallback IupSetCallback(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, ISizecallback func);
         [DllImport(IUP_DLL)] public static extern IntPtr IupSetCallbacks(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, Icallback func, params string[] extra);
 
         [DllImport(IUP_DLL)] public static extern Icallback IupGetFunction(string name);
@@ -263,7 +265,9 @@ namespace IUPSharp
         [DllImport(IUP_DLL)] public static extern void IupSetAttributeHandleId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col, IntPtr ih_named);
         [DllImport(IUP_DLL)] public static extern IntPtr IupGetAttributeHandleId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col);
 
-        [DllImport(IUP_DLL)] public static extern string IupGetClassName(IntPtr ih);
+        [DllImport(IUP_DLL)]
+        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))]
+        public static extern string IupGetClassName(IntPtr ih);
         [DllImport(IUP_DLL)] public static extern string IupGetClassType(IntPtr ih);
         [DllImport(IUP_DLL)] public static extern int IupGetAllClasses([MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);
         [DllImport(IUP_DLL)] public static extern int IupGetClassAttributes(string classname, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);
