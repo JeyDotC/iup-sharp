@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IUPSharp.Dom\IUPSharp.Dom.csproj" />
+    <ProjectReference Include="..\IUPSharp.UI\IUPSharp.UI.csproj" />
+    <ProjectReference Include="..\IUPSharp\IUPSharp.csproj" />
+  </ItemGroup>
+
+</Project>
