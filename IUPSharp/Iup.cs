@@ -143,19 +143,19 @@ namespace IUPSharp
         [DllImport(IUP_DLL)] public static extern int IupHelp(string url);
         [DllImport(IUP_DLL)] public static extern void IupLog(string type, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string format);
 
-        [DllImport(IUP_DLL)] public static extern string IupLoad(string filename);
-        [DllImport(IUP_DLL)] public static extern string IupLoadBuffer(string buffer);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupLoad(string filename);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupLoadBuffer(string buffer);
 
-        [DllImport(IUP_DLL)] public static extern string IupVersion();
-        [DllImport(IUP_DLL)] public static extern string IupVersionDate();
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupVersion();
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupVersionDate();
         [DllImport(IUP_DLL)] public static extern int IupVersionNumber();
         [DllImport(IUP_DLL)] public static extern void IupVersionShow();
 
         [DllImport(IUP_DLL)] public static extern void IupSetLanguage(string lng);
-        [DllImport(IUP_DLL)] public static extern string IupGetLanguage();
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetLanguage();
         [DllImport(IUP_DLL)] public static extern void IupSetLanguageString(string name, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string str);
         [DllImport(IUP_DLL)] public static extern void IupStoreLanguageString(string name, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string str);
-        [DllImport(IUP_DLL)] public static extern string IupGetLanguageString(string name);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetLanguageString(string name);
         [DllImport(IUP_DLL)] public static extern void IupSetLanguagePack(IntPtr ih);
 
         [DllImport(IUP_DLL)] public static extern void IupDestroy(IntPtr ih);
@@ -184,7 +184,7 @@ namespace IUPSharp
         [DllImport(IUP_DLL)] public static extern void IupCopyAttributes(IntPtr src_ih, IntPtr dst_ih);
         [DllImport(IUP_DLL)] public static extern IntPtr IupSetAtt(string handle_name, IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, params string[] extra);
         [DllImport(IUP_DLL)] public static extern IntPtr IupSetAttributes(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string str);
-        [DllImport(IUP_DLL)] public static extern string IupGetAttributes(IntPtr ih);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetAttributes(IntPtr ih);
 
         [DllImport(IUP_DLL)] public static extern void IupSetAttribute(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))]string value);
         [DllImport(IUP_DLL)] public static extern void IupSetStrAttribute(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string value);
@@ -215,7 +215,7 @@ namespace IUPSharp
         [DllImport(IUP_DLL)] public static extern void IupSetDoubleId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id, double value);
         [DllImport(IUP_DLL)] public static extern void IupSetRGBId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id, byte r, byte g, byte b);
 
-        [DllImport(IUP_DLL)] public static extern string IupGetAttributeId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetAttributeId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id);
         [DllImport(IUP_DLL)] public static extern int IupGetIntId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id);
         [DllImport(IUP_DLL)] public static extern float IupGetFloatId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id);
         [DllImport(IUP_DLL)] public static extern double IupGetDoubleId(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int id);
@@ -229,7 +229,7 @@ namespace IUPSharp
         [DllImport(IUP_DLL)] public static extern void IupSetDoubleId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col, double value);
         [DllImport(IUP_DLL)] public static extern void IupSetRGBId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col, byte r, byte g, byte b);
 
-        [DllImport(IUP_DLL)] public static extern string IupGetAttributeId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetAttributeId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col);
         [DllImport(IUP_DLL)] public static extern int IupGetIntId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col);
         [DllImport(IUP_DLL)] public static extern float IupGetFloatId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col);
         [DllImport(IUP_DLL)] public static extern double IupGetDoubleId2(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, int lin, int col);
@@ -237,7 +237,7 @@ namespace IUPSharp
 
         [DllImport(IUP_DLL)] public static extern void IupSetGlobal(string name, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string value);
         [DllImport(IUP_DLL)] public static extern void IupSetStrGlobal(string name, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string value);
-        [DllImport(IUP_DLL)] public static extern string IupGetGlobal(string name);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetGlobal(string name);
 
         [DllImport(IUP_DLL)] public static extern IntPtr IupSetFocus(IntPtr ih);
         [DllImport(IUP_DLL)] public static extern IntPtr IupGetFocus();
@@ -256,7 +256,7 @@ namespace IUPSharp
         [DllImport(IUP_DLL)] public static extern IntPtr IupSetHandle(string name, IntPtr ih);
         [DllImport(IUP_DLL)] public static extern int IupGetAllNames([MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);
         [DllImport(IUP_DLL)] public static extern int IupGetAllDialogs([MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);
-        [DllImport(IUP_DLL)] public static extern string IupGetName(IntPtr ih);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetName(IntPtr ih);
 
         [DllImport(IUP_DLL)] public static extern void IupSetAttributeHandle(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name, IntPtr ih_named);
         [DllImport(IUP_DLL)] public static extern IntPtr IupGetAttributeHandle(IntPtr ih, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] string name);
@@ -268,7 +268,7 @@ namespace IUPSharp
         [DllImport(IUP_DLL)]
         [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))]
         public static extern string IupGetClassName(IntPtr ih);
-        [DllImport(IUP_DLL)] public static extern string IupGetClassType(IntPtr ih);
+        [DllImport(IUP_DLL)] [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(CharStarMarshaler))] public static extern string IupGetClassType(IntPtr ih);
         [DllImport(IUP_DLL)] public static extern int IupGetAllClasses([MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);
         [DllImport(IUP_DLL)] public static extern int IupGetClassAttributes(string classname, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);
         [DllImport(IUP_DLL)] public static extern int IupGetClassCallbacks(string classname, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPTStr)] string[] names, int n);

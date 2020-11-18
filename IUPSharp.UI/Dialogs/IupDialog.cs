@@ -8,42 +8,20 @@ namespace IUPSharp.UI.Dialogs
 {
     public sealed class IupDialog : IupControl
     {
-        internal IupDialog(IntPtr handle) : base(handle) { }
-
         public IupDialog()
             : this(new IupNoObject())
         {
 
         }
 
-        public IupDialog(IupObject child) : this(Iup.IupDialog(child.Handle)) { 
+        public IupDialog(IupObject child) : base(Iup.IupDialog(child.Handle)) {
+
+            SetCallback("CLOSE_CB", CloseCallback);
+         
+            SetCallback("RESIZE_CB", ResizeCallback);
         }
 
-        public IupDialog OnClose(EventHandler<DialogCloseArgs> close)
-        {
-            SetCallback("CLOSE_CB", handle =>
-            {
-                var args = new DialogCloseArgs();
-
-                close?.Invoke(this, args);
-
-                return args.ShouldClose ? Iup.IUP_CLOSE : Iup.IUP_IGNORE;
-            });
-            return this;
-        }
-
-        public IupDialog OnResize(EventHandler<DialogResizeArgs> resize)
-        {
-            SetCallback("RESIZE_CB", (h, width, height) => {
-                var args = new DialogResizeArgs(new Size(width, height));
-
-                resize?.Invoke(this, args);
-
-                return Iup.IUP_NOERROR;
-            });
-
-            return this;
-        }
+        #region Properties
 
         public string Background
         {
@@ -67,6 +45,33 @@ namespace IUPSharp.UI.Dialogs
         }
 
         public bool SimulateModal { set => SetBoolean("SIMULATEMODAL", value); }
+
+        #endregion
+
+        #region Events
+        
+        public event EventHandler<DialogCloseArgs> Close;
+        public event EventHandler<DialogResizeArgs> Resize;
+        
+        private int CloseCallback(IntPtr handle)
+        {
+            var args = new DialogCloseArgs();
+
+            Close?.Invoke(this, args);
+
+            return args.ShouldClose ? Iup.IUP_CLOSE : Iup.IUP_IGNORE;
+        }
+
+        private int ResizeCallback(IntPtr handle, int width, int height)
+        {
+            var args = new DialogResizeArgs(new Size(width, height));
+
+            Resize?.Invoke(this, args);
+
+            return Iup.IUP_NOERROR;
+        }
+
+        #endregion
 
         public void ShowXY(int x, int y) => Iup.IupShowXY(Handle, x, y);
     }

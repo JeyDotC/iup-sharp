@@ -21,20 +21,30 @@ namespace IUPBinding
                     {
                         Title = "Hello World",
                         Expand = IupExpandMode.Horizontal,
-                    }.OnAction((o, h) => Console.WriteLine("Clicked.")),
+                    }.With(button =>
+                    {
+                        button.Action += (o, h) => {
+                            var helloWorld2 = button.Parent.GetByName<IupButton>("HelloWorld2");
+                            helloWorld2.Title = "Oh, you found me!";
+                        };
+                    }),
                     new IupButton
                     {
+                        Name = "HelloWorld2",
                         Title = "Hello World 2",
                         Expand = IupExpandMode.Horizontal,
                     },
                     new IupButton
                     {
+                        Name = "HelloWorld3",
                         Title = "Hello World 3",
                         Expand = IupExpandMode.Horizontal,
-                    },
+                    }.With(button => {
+                        button.Action += (o, a) => button.Root.Title = "Buahahahaha, I changed the title!";
+                    }),
                     new IupButton
                     {
-                        Title = "Hello World 3",
+                        Title = "Hello World 4",
                         Expand = IupExpandMode.Horizontal,
                     },
                     new IupButton
@@ -45,17 +55,17 @@ namespace IUPBinding
                     },
                     new IupButton
                     {
-                        Title = "Hello World 3",
+                        Title = "Hello World 5",
                         Expand = IupExpandMode.Horizontal,
                     },
                     new IupButton
                     {
-                        Title = "Hello World 3",
+                        Title = "Hello World 6",
                         Expand = IupExpandMode.Horizontal,
                     },
                     new IupButton
                     {
-                        Title = "Hello World 3",
+                        Title = "Hello World 7",
                         Expand = IupExpandMode.Horizontal,
                     }
                 );
@@ -72,13 +82,14 @@ namespace IUPBinding
 
                 foreach (var button in vBox.Children.Cast<IupButton>())
                 {
-                    button.Size = "x30";
+                    button.Size = "x40";
                 }
 
-                window.OnResize((obj, args) => Console.WriteLine("Refresh Supported!"));
-                window.OnResize((obj, args) => Console.WriteLine("Multi-Refresh Supported!"));
+                window.Resize += (obj, args) => Console.WriteLine("Resize Supported!");
 
                 window.ShowXY(Iup.IUP_CENTER, Iup.IUP_CENTER);
+
+                Console.WriteLine($"Powered by IUP V {app.Version}");
 
                 app.MainLoop();
             }

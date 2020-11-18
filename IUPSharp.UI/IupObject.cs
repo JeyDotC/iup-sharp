@@ -10,20 +10,20 @@ namespace IUPSharp.UI
 {
     public abstract class IupObject
     {
-        private static readonly IDictionary<IntPtr, Type> _typeMap = new Dictionary<IntPtr, Type>();
+        private static readonly IDictionary<IntPtr, IupObject> _objectReferenceMap = new Dictionary<IntPtr, IupObject>();
 
         internal IupObject(IntPtr handle)
         {
             Handle = handle;
-            _typeMap[handle] = GetType();
+            _objectReferenceMap[handle] = this;
         }
 
-        static internal TIupObject CreateFromHandle<TIupObject>(IntPtr handle)
+        static internal TIupObject GetFromHandle<TIupObject>(IntPtr handle)
             where TIupObject : IupObject
-            => CreateFromHandle(handle, typeof(TIupObject)) as TIupObject;
+            => GetFromHandle(handle) as TIupObject;
 
-        static private IupObject CreateFromHandle(IntPtr handle, Type type)
-           => type.GetConstructor(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(IntPtr) }, null).Invoke(new object[] { handle }) as IupObject;
+        static private IupObject GetFromHandle(IntPtr handle)
+           => handle != IntPtr.Zero ? _objectReferenceMap[handle] : null;
 
 
         internal IntPtr Handle { get; } = IntPtr.Zero;
@@ -32,24 +32,9 @@ namespace IUPSharp.UI
 
         public string Name { get => Get("NAME"); set => Set("NAME", value); }
 
-        public IupObject Parent
-        {
-            get
-            {
-                var parentHandle = Iup.IupGetParent(Handle);
+        public IupObject Parent => GetFromHandle(Iup.IupGetParent(Handle));
 
-                if (parentHandle == IntPtr.Zero)
-                {
-                    return null;
-                }
-
-                var parentType = _typeMap[parentHandle];
-
-                return CreateFromHandle(parentHandle, parentType);
-            }
-        }
-
-        public IupDialog Root => CreateFromHandle<IupDialog>(Iup.IupGetDialog(Handle));
+        public IupDialog Root => GetFromHandle<IupDialog>(Iup.IupGetDialog(Handle));
 
         public int ChildCount => Iup.IupGetChildCount(Handle);
 
@@ -60,9 +45,8 @@ namespace IUPSharp.UI
                 foreach (var childIndex in Enumerable.Range(0, ChildCount))
                 {
                     var childHandle = Iup.IupGetChild(Handle, childIndex);
-                    var childType = _typeMap[childHandle];
 
-                    yield return CreateFromHandle(childHandle, childType);
+                    yield return GetFromHandle(childHandle);
                 }
             }
         }
@@ -84,7 +68,7 @@ namespace IUPSharp.UI
                 return null;
             }
 
-            return CreateFromHandle<TControl>(handle);
+            return GetFromHandle<TControl>(handle);
         }
 
         private void AddInternal(IupObject iupObject)

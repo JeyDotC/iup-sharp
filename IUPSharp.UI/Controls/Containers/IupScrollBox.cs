@@ -6,8 +6,6 @@ namespace IUPSharp.UI.Controls.Containers
 {
     public class IupScrollBox : IupControl
     {
-        internal IupScrollBox(IntPtr handle) : base(handle) { }
-
         public IupScrollBox(): this(new IupNoObject())
         {
 

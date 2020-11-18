@@ -6,6 +6,8 @@ namespace IUPSharp.UI
 {
     public class IupApp : IDisposable
     {
+        public string Version => Iup.IupVersion();
+
         public IupApp()
         {
             Iup.IupOpen(IntPtr.Zero, new string[] { });

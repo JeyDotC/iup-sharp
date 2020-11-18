@@ -7,24 +7,19 @@ namespace IUPSharp.UI.Controls.Standard
 {
     public sealed class IupButton : IupControl
     {
-        internal IupButton(IntPtr handle) : base(handle) {
-        }
-
         public IupButton(string title = "")
-            : this(Iup.IupFlatButton(title))
+            : base(Iup.IupFlatButton(title))
         {
-
+            SetCallback("FLAT_ACTION", FlatActionCallback);
         }
 
-        public IupButton OnAction(EventHandler<ButtonActionArgs> handler)
-        {
-            SetCallback("FLAT_ACTION", handle => {
-                
-                handler?.Invoke(this, new ButtonActionArgs());
+        public event EventHandler<ButtonActionArgs> Action;
 
-                return Iup.IUP_NOERROR;
-            });
-            return this;
+        private int FlatActionCallback(IntPtr handle)
+        {
+            Action?.Invoke(this, new ButtonActionArgs());
+
+            return Iup.IUP_NOERROR;
         }
     }
 }
