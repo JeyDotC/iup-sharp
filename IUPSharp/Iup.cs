@@ -108,8 +108,10 @@ namespace IUPSharp
 
 #if WIN64
         const string IUP_DLL = "win64/iup.dll";
-#else
-        const string IUP_DLL = "win64/iup.dll";
+#endif
+
+#if LINUX64
+        const string IUP_DLL = "linux64/libiup.so";
 #endif
 
 

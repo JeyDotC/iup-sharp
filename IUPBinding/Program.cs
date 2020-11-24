@@ -14,7 +14,9 @@ namespace IUPBinding
     {
         static void Main(string[] args)
         {
-            using (var app = new IupApp())
+            using (var app = new IupApp { 
+                ShowConsoleWindow = false
+            } )
             {
                 var vBox = new IupVBox(
                     new IupButton
@@ -27,6 +29,7 @@ namespace IUPBinding
                             var helloWorld2 = button.Parent.GetByName<IupButton>("HelloWorld2");
                             helloWorld2.Title = "Oh, you found me!";
                         };
+                        button.Add(new IupButton("Inner Guy!"));
                     }),
                     new IupButton
                     {
@@ -44,9 +47,12 @@ namespace IUPBinding
                     }),
                     new IupButton
                     {
-                        Title = "Hello World 4",
+                        Title = "Hide Console Window",
                         Expand = IupExpandMode.Horizontal,
-                    },
+                    }.With(b =>
+                    {
+                        b.Action += (o, e) => app.ShowConsoleWindow = false;
+                    }),
                     new IupButton
                     {
                         Title = "Inactive Button",
@@ -55,9 +61,12 @@ namespace IUPBinding
                     },
                     new IupButton
                     {
-                        Title = "Hello World 5",
+                        Title = "Show Console Window",
                         Expand = IupExpandMode.Horizontal,
-                    },
+                    }.With(b =>
+                    {
+                        b.Action += (o, e) => app.ShowConsoleWindow = true;
+                    }),
                     new IupButton
                     {
                         Title = "Hello World 6",
@@ -70,13 +79,15 @@ namespace IUPBinding
                     }
                 );
 
-                var scrollBox = new IupScrollBox(vBox);
-                var window = new IupDialog(scrollBox)
+                var window = new IupDialog(new IupScrollBox(vBox))
                 {
                     BgColor = Color.White,
                     Title = "Hello World",
                     Size = IupSize.Half,
-                };
+                }.With(w =>
+                {
+                    w.Resize += (obj, args) => Console.WriteLine("Window Resized");
+                });
 
                 window.Title = $"The VBox has {vBox.ChildCount} children";
 
@@ -85,11 +96,7 @@ namespace IUPBinding
                     button.Size = "x40";
                 }
 
-                window.Resize += (obj, args) => Console.WriteLine("Resize Supported!");
-
                 window.ShowXY(Iup.IUP_CENTER, Iup.IUP_CENTER);
-
-                Console.WriteLine($"Powered by IUP V {app.Version}");
 
                 app.MainLoop();
             }
