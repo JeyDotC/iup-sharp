@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IUPSharp.UI.Events;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,7 +9,15 @@ namespace IUPSharp.UI
 {
     public abstract class IupControl : IupObject
     {
-        internal IupControl(IntPtr handle): base(handle) { }
+        protected IupControl(IntPtr handle) : base(handle)
+        {
+            SetCallback("GETFOCUS_CB", GetFocus);
+            SetCallback("KILLFOCUS_CB", KillFocus);
+
+            // This doesn't work for some reason :'(
+            //SetCallback("ENTERWINDOW_CB", EnterWindow);
+            //SetCallback("LEAVEWINDOW_CB", LeaveWindow);
+        }
 
         protected Color GetColor(string attribute)
         {
@@ -153,6 +162,44 @@ namespace IUPSharp.UI
 
         // Internal stuff.
         //public string Wid { get => Get("WID"); }
+
+        #region Events
+
+        public event EventHandler<FocusEventArgs> FocusIn;
+
+        public event EventHandler<FocusEventArgs> FocusOut;
+
+        public event EventHandler<MouseEnterArgs> MouseEnter;
+
+        public event EventHandler<MouseLeaveArgs> MouseLeave;
+
+        private int GetFocus(IntPtr h)
+        {
+            FocusIn?.Invoke(this, new FocusEventArgs());
+            return Iup.IUP_DEFAULT;
+        }
+
+        private int KillFocus(IntPtr h)
+        {
+            FocusOut?.Invoke(this, new FocusEventArgs());
+            return Iup.IUP_DEFAULT;
+        }
+
+        private int EnterWindow(IntPtr handle)
+        {
+            Console.WriteLine("EnterWindow");
+            MouseEnter?.Invoke(this, new MouseEnterArgs());
+            return Iup.IUP_CONTINUE;
+        }
+
+        private int LeaveWindow(IntPtr handle)
+        {
+            Console.WriteLine("LeaveWindow");
+            MouseLeave?.Invoke(this, new MouseLeaveArgs());
+            return Iup.IUP_CONTINUE;
+        }
+
+        #endregion
 
     }
 }

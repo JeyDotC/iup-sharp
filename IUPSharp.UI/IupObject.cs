@@ -16,6 +16,13 @@ namespace IUPSharp.UI
         {
             Handle = handle;
             _objectReferenceMap[handle] = this;
+            SetCallback("LDESTROY_CB", OnDestroy);
+        }
+
+        private int OnDestroy(IntPtr handle)
+        {
+            _objectReferenceMap.Remove(Handle);
+            return Iup.IUP_DEFAULT;
         }
 
         static internal TIupObject GetFromHandle<TIupObject>(IntPtr handle)

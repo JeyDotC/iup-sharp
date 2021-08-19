@@ -19,7 +19,7 @@ namespace IUPSharp.UI.Controls.Standard
         {
             Action?.Invoke(this, new ButtonActionArgs());
 
-            return Iup.IUP_NOERROR;
+            return Iup.IUP_DEFAULT;
         }
     }
 }
